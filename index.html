@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>¿Buscas tu próximo auto? | California Vehicles (Car Dealership Style)</title>
+
+  <!-- Preload background image -->
+  <link rel="preload" as="image" href="./assets/background.jpg" fetchpriority="high">
+
+  <!-- Exact Fonts from car-dealership.framer.website: Space Grotesk, Fragment Mono & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital@0;1&family=Inter:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================================================
+       CSS RESET & EXACT DESIGN TOKENS
+       Extracted directly from https://car-dealership.framer.website/
+       ========================================================================== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    :root {
+      /* Exact Typography */
+      --font-display: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'Fragment Mono', monospace;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+      /* Exact Framer Tokens from car-dealership.framer.website */
+      --token-page-bg: #f2f2f2;         /* --token-5fa2177f... #f2f2f2 */
+      --token-dark: #000000;            /* --token-dc5257b4... #000 */
+      --token-white: #ffffff;           /* --token-9eedde1f... #fff */
+      --token-card-bg: #fafafa;         /* --token-0e153aae... #fafafa */
+      --token-text-muted: #4d4d4d;      /* --token-2add0f6e... #4d4d4d */
+      --token-gray-subtle: #771cfef0;   /* --token-771cfef0... #a0a0a0 */
+      --token-border: #d9d9d9;          /* --token-0b9fc09a... #d9d9d9 */
+      --token-overlay: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.08) 30%, rgba(0, 0, 0, 0.42) 60%, rgba(0, 0, 0, 0.78) 82%, rgba(0, 0, 0, 0.92) 100%);
+      --token-dark-card: #1a1a1a;       /* --token-32f6d960... #1a1a1a */
+
+      /* Exact Framer Radii */
+      --radius-sm: 8px;
+      --radius-icon: 12px;
+      --radius-card: 16px;
+      --radius-container: 20px;
+      --radius-full: 9999px;
+
+      /* Signature Inset Highlight from car-dealership */
+      --inset-glow: inset -10px -10px 20px 0px rgba(255, 255, 255, 0.25);
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: var(--token-page-bg);
+      font-family: var(--font-display);
+      color: var(--token-dark);
+    }
+
+    /* ==========================================================================
+       HERO WRAPPER - 100% WIDTH & 100% HEIGHT
+       Framed container inside #f2f2f2 page background (Exact Framer layout)
+       ========================================================================== */
+    .page-viewport {
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .hero-frame {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background-color: var(--token-dark);
+      border-radius: var(--radius-container);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+    }
+
+    /* Background Image Layer */
+    .hero-media {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    .hero-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: 50% 60%;
+      display: block;
+      transform: scale(1);
+      animation: subtleZoom 14s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      will-change: transform;
+    }
+
+    @keyframes subtleZoom {
+      0% {
+        transform: scale(1);
+      }
+      100% {
+        transform: scale(1.045);
+      }
+    }
+
+    /* Gradient Dark Overlay: 0% opacity at top, 0.32 at bottom */
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      background: var(--token-overlay);
+      pointer-events: none;
+    }
+
+    /* ==========================================================================
+       HEADER (Exact car-dealership brand navigation)
+       ========================================================================== */
+    .hero-header {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      padding: 28px 44px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+    }
+
+    .brand-title {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      text-transform: uppercase;
+      color: var(--token-white);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+    }
+
+    .brand-title span.tag {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      padding: 3px 8px;
+      background-color: rgba(255, 255, 255, 0.15);
+      border-radius: 6px;
+      color: var(--token-white);
+    }
+
+    /* ==========================================================================
+       HERO CONTENT (Left Typography + Right Floating Cards - Bottom Aligned)
+       ========================================================================== */
+    .hero-content {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 100%;
+      margin: 0;
+      padding: 0 44px;
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      align-items: end;
+      gap: 60px;
+      flex: 1;
+    }
+
+    /* LEFT SIDE */
+    .content-left {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      max-width: 650px;
+      align-self: end;
+      margin-bottom: 20px;
+    }
+
+    /* Exact H1 Preset: Space Grotesk, 56px, 700, -0.03em, 1em line-height, #ffffff */
+    .hero-h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2.8rem, 5.4vw, 4.4rem);
+      font-weight: 700;
+      line-height: 1.02;
+      letter-spacing: -0.035em;
+      color: var(--token-white);
+      text-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Subtitle: Space Grotesk, 16px, 500, 1.5em line-height */
+    .hero-sub {
+      font-family: var(--font-display);
+      font-size: clamp(1.05rem, 1.35vw, 1.25rem);
+      font-weight: 500;
+      line-height: 1.5;
+      color: var(--token-white);
+      opacity: 0.92;
+      max-width: 540px;
+    }
+
+    /* Exact highlighted stat line */
+    .hero-highlight-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      font-weight: 500;
+      color: var(--token-white);
+    }
+
+    .mono-accent-number {
+      font-family: var(--font-mono);
+      font-weight: 600;
+      font-size: 1.35rem;
+      letter-spacing: -0.02em;
+      color: var(--token-white);
+      background: rgba(255, 255, 255, 0.16);
+      padding: 2px 10px;
+      border-radius: var(--radius-sm);
+      display: inline-block;
+    }
+
+    /* ==========================================================================
+       EXACT CAR-DEALERSHIP PRIMARY BUTTON
+       background-color: #f2f2f2, border-radius: 16px, padding: 4px 4px 4px 20px
+       Text in #000, and inner black arrow badge with inset highlight
+       ========================================================================== */
+    .btn-car-dealership {
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 5px 5px 5px 22px;
+      background-color: var(--token-page-bg);
+      border-radius: var(--radius-card);
+      text-decoration: none;
+      color: var(--token-dark);
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      width: fit-content;
+      border: 1px solid rgba(255, 255, 255, 0.6);
+    }
+
+    .btn-car-dealership:hover {
+      background-color: var(--token-white);
+      transform: translateY(-2px);
+      box-shadow: 0 14px 32px rgba(0, 0, 0, 0.45);
+    }
+
+    .btn-car-dealership:active {
+      transform: translateY(0);
+    }
+
+    .btn-text-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-whatsapp-dot {
+      width: 9px;
+      height: 9px;
+      background-color: var(--token-dark);
+      border-radius: 50%;
+    }
+
+    /* Exact Inset Arrow Badge from car-dealership.framer.website */
+    .btn-dark-icon-pill {
+      background-color: var(--token-dark);
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-icon);
+      box-shadow: var(--inset-glow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: transform 0.2s ease;
+    }
+
+    .btn-dark-icon-pill svg {
+      width: 18px;
+      height: 18px;
+      stroke: var(--token-page-bg);
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+      transition: transform 0.2s ease;
+    }
+
+    .btn-car-dealership:hover .btn-dark-icon-pill {
+      transform: scale(1.05);
+    }
+
+    .btn-car-dealership:hover .btn-dark-icon-pill svg {
+      transform: translateX(2px);
+    }
+
+    .hero-caption {
+      font-family: var(--font-display);
+      font-size: 0.92rem;
+      font-weight: 500;
+      color: var(--token-page-bg);
+      opacity: 0.85;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* ==========================================================================
+       RIGHT SIDE (Exact Framer Search Card + Stat Pills - Bottom Aligned)
+       ========================================================================== */
+    .content-right {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      justify-self: end;
+      align-self: end;
+      margin-bottom: 20px;
+      width: 100%;
+      max-width: 420px;
+    }
+
+    /* Exact Framer Search Card */
+    .framer-search-card {
+      background-color: var(--token-white);
+      border-radius: var(--radius-card);
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.25);
+    }
+
+    .search-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.82rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--token-text-muted);
+    }
+
+    .search-input-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background-color: var(--token-card-bg);
+      border-radius: var(--radius-sm);
+      padding: 6px 6px 6px 14px;
+      border: 1px solid var(--token-border);
+    }
+
+    .search-input-box input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      font-family: var(--font-display);
+      font-size: 0.92rem;
+      font-weight: 500;
+      color: var(--token-dark);
+      outline: none;
+    }
+
+    .search-input-box input::placeholder {
+      color: var(--token-text-muted);
+    }
+
+    .search-btn-black {
+      background-color: var(--token-dark);
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: var(--inset-glow);
+      transition: transform 0.2s ease;
+    }
+
+    .search-btn-black:hover {
+      transform: scale(1.06);
+    }
+
+    .search-btn-black svg {
+      width: 16px;
+      height: 16px;
+      fill: var(--token-white);
+    }
+
+    /* Exact Stat Cards from car-dealership (framer-domkv6 & framer-1tuwcd8) */
+    .stat-cards-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .framer-white-stat-pill {
+      background-color: var(--token-white);
+      border-radius: var(--radius-card);
+      padding: 10px 14px 10px 10px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
+    }
+
+    .stat-black-icon {
+      background-color: var(--token-dark);
+      width: 50px;
+      height: 50px;
+      border-radius: var(--radius-icon);
+      box-shadow: var(--inset-glow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .stat-black-icon svg {
+      width: 22px;
+      height: 22px;
+      fill: var(--token-white);
+    }
+
+    .stat-text-col {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stat-number {
+      font-family: var(--font-mono);
+      font-size: 1.35rem;
+      font-weight: 600;
+      line-height: 1.1;
+      color: var(--token-dark);
+      letter-spacing: -0.03em;
+    }
+
+    .stat-desc {
+      font-family: var(--font-display);
+      font-size: 0.74rem;
+      font-weight: 500;
+      color: var(--token-text-muted);
+    }
+
+    /* ==========================================================================
+       HERO FOOTER STRIP
+       ========================================================================== */
+    .hero-footer {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      padding: 20px 44px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      font-size: 0.82rem;
+      color: var(--token-page-bg);
+      opacity: 0.9;
+    }
+
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    /* ==========================================================================
+       FADE IN ANIMATIONS ON LOAD (Staggered Entrance)
+       ========================================================================== */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(24px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInHeader {
+      from {
+        opacity: 0;
+        transform: translateY(-12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInSimple {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    .hero-header {
+      animation: fadeInHeader 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    .hero-h1 {
+      animation: fadeInUp 1.4s cubic-bezier(0.16, 1, 0.3, 1) 0.12s both;
+    }
+
+    .hero-sub {
+      animation: fadeInUp 1.4s cubic-bezier(0.16, 1, 0.3, 1) 0.26s both;
+    }
+
+    .hero-highlight-row {
+      animation: fadeInUp 1.4s cubic-bezier(0.16, 1, 0.3, 1) 0.38s both;
+    }
+
+    .framer-search-card {
+      animation: fadeInUp 1.4s cubic-bezier(0.16, 1, 0.3, 1) 0.4s both;
+    }
+
+    .btn-car-dealership {
+      animation: fadeInUp 1.4s cubic-bezier(0.16, 1, 0.3, 1) 0.5s both;
+    }
+
+    .framer-white-stat-pill:nth-child(1) {
+      animation: fadeInUp 1.4s cubic-bezier(0.16, 1, 0.3, 1) 0.52s both;
+    }
+
+    .framer-white-stat-pill:nth-child(2) {
+      animation: fadeInUp 1.4s cubic-bezier(0.16, 1, 0.3, 1) 0.64s both;
+    }
+
+    .hero-caption {
+      animation: fadeInUp 1.4s cubic-bezier(0.16, 1, 0.3, 1) 0.62s both;
+    }
+
+    .hero-footer {
+      animation: fadeInSimple 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.72s both;
+    }
+
+    /* ==========================================================================
+       RESPONSIVE
+       ========================================================================== */
+    @media (max-width: 992px) {
+      .hero-header {
+        padding: 22px 32px;
+      }
+      .hero-content {
+        grid-template-columns: 1fr;
+        gap: 32px;
+        padding: 0 32px;
+      }
+      .content-right {
+        max-width: 100%;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        align-self: auto;
+        margin-bottom: 0;
+      }
+      .stat-cards-grid {
+        grid-column: span 2;
+      }
+      .hero-footer {
+        padding: 18px 32px;
+      }
+    }
+
+    @media (max-width: 680px) {
+      html, body {
+        overflow-y: auto;
+      }
+      .page-viewport {
+        height: auto;
+        min-height: 100dvh;
+        padding: 6px;
+      }
+      .hero-frame {
+        border-radius: 14px;
+      }
+      .hero-header {
+        padding: 16px 20px;
+      }
+      .hero-content {
+        padding: 0 20px;
+        gap: 24px;
+      }
+      .hero-h1 {
+        font-size: 2.35rem;
+      }
+      .content-right {
+        grid-template-columns: 1fr;
+      }
+      .stat-cards-grid {
+        grid-column: span 1;
+      }
+      .btn-car-dealership {
+        width: 100%;
+      }
+      .hero-caption {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+      }
+      .hero-caption span:nth-child(2) {
+        display: none;
+      }
+      .hero-footer {
+        flex-direction: column;
+        gap: 10px;
+        padding: 16px 20px;
+        text-align: left;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Fullscreen 100% Width & 100% Height Viewport -->
+  <main class="page-viewport">
+    
+    <!-- Exact Framer Car-Dealership Framed Card -->
+    <div class="hero-frame">
+
+      <!-- Background Image -->
+      <div class="hero-media">
+        <img 
+          src="./assets/background.jpg" 
+          alt="Más de 2.000 vehículos disponibles en cuatro tiendas"
+          loading="eager"
+          fetchpriority="high"
+        >
+      </div>
+
+      <!-- Exact Framer Dark Overlay: #00000080 -->
+      <div class="hero-overlay" aria-hidden="true"></div>
+
+      <!-- Header -->
+      <header class="hero-header">
+        <a href="#" class="brand-title" aria-label="California Vehicles">
+          <span>CALIFORNIA VEHICLES</span>
+          <span class="tag">DEALERSHIP</span>
+        </a>
+      </header>
+
+      <!-- Main Content -->
+      <div class="hero-content">
+
+        <!-- Left Typography Column -->
+        <div class="content-left">
+          
+          <h1 class="hero-h1">
+            ¿Buscas tu<br>próximo auto?
+          </h1>
+
+          <p class="hero-sub">
+            Cuéntanos qué necesitas y te ayudamos a explorar opciones disponibles.
+          </p>
+
+          <div class="hero-highlight-row">
+            <span>Más de</span>
+            <span class="mono-accent-number">2.000</span>
+            <span>vehículos en cuatro tiendas.</span>
+          </div>
+
+          <!-- Exact Car Dealership Primary Button -->
+          <a 
+            href="https://wa.me/?text=Hola%2C%20estoy%20buscando%20mi%20pr%C3%B3ximo%20auto.%20Me%20gustar%C3%ADa%20ver%20las%20opciones%20disponibles."
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn-car-dealership"
+            id="whatsappBtn"
+          >
+            <div class="btn-text-wrap">
+              <span class="btn-whatsapp-dot" aria-hidden="true"></span>
+              <span>Hablar por WhatsApp</span>
+            </div>
+            <div class="btn-dark-icon-pill" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </div>
+          </a>
+
+          <div class="hero-caption">
+            <span>✓ Atención personalizada en español</span>
+            <span>·</span>
+            <span>Respuesta inmediata</span>
+          </div>
+
+        </div>
+
+        <!-- Right Floating Components (Framer Search Card & Stat Pills) -->
+        <div class="content-right">
+
+          <!-- Exact Framer Search Card -->
+          <div class="framer-search-card">
+            <div class="search-card-header">
+              <span>Buscador Rápido</span>
+              <span>4 Tiendas</span>
+            </div>
+            <form class="search-input-box" onsubmit="handleSearch(event)">
+              <input 
+                type="text" 
+                id="searchVehiculoInput"
+                placeholder="Busca marca, SUV, sedán, pickup..."
+                aria-label="Buscar vehículo"
+              >
+              <button type="submit" class="search-btn-black" aria-label="Buscar">
+                <svg viewBox="0 0 24 24">
+                  <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                </svg>
+              </button>
+            </form>
+          </div>
+
+          <!-- Exact Framer White Stat Cards -->
+          <div class="stat-cards-grid">
+            
+            <div class="framer-white-stat-pill">
+              <div class="stat-black-icon">
+                <svg viewBox="0 0 24 24">
+                  <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.85 7h10.29l1.04 3H5.81l1.04-3zM19 17H5v-4.66l.12-.34h13.77l.11.34V17z"/>
+                </svg>
+              </div>
+              <div class="stat-text-col">
+                <span class="stat-number">2.000+</span>
+                <span class="stat-desc">En Inventario</span>
+              </div>
+            </div>
+
+            <div class="framer-white-stat-pill">
+              <div class="stat-black-icon">
+                <svg viewBox="0 0 24 24">
+                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                </svg>
+              </div>
+              <div class="stat-text-col">
+                <span class="stat-number">4</span>
+                <span class="stat-desc">Tiendas en CA</span>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Footer Inside Card -->
+      <footer class="hero-footer">
+        <div class="footer-left">
+          <span>© 2026 California Vehicles Dealership</span>
+        </div>
+      </footer>
+
+    </div>
+
+  </main>
+
+  <script>
+    function handleSearch(e) {
+      if (e) e.preventDefault();
+      const val = document.getElementById('searchVehiculoInput').value.trim();
+      let msg = 'Hola, estoy buscando mi próximo auto y quisiera ver opciones disponibles.';
+      if (val) {
+        msg = `Hola, estoy interesado en opciones disponibles de "${val}" de su inventario de más de 2.000 vehículos.`;
+      }
+      window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+    }
+  </script>
+</body>
+</html>
